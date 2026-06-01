@@ -21,20 +21,20 @@ pub struct Withdraw<'info> {
 
 impl<'info> Withdraw<'info> {
     pub fn withdraw(&mut self, amount: u64) -> Result<()> {
-        // Transfer lamports from the vault to the user
         let cpi_accounts = Transfer {
             from: self.vault.to_account_info(),
             to: self.user.to_account_info(),
         };
+
         let seeds = &[
             b"vault",
             self.vault_state.to_account_info().key.as_ref(),
             &[self.vault_state.vault_bump],
         ];
 
-        let signer_seeds = &[&seeds[..]];
+        let signer_seeds = [&seeds[..]];
 
-        let cpi_ctx = CpiContext::new_with_signer(System::id(), cpi_accounts, signer_seeds);
+        let cpi_ctx = CpiContext::new_with_signer(System::id(), cpi_accounts, &signer_seeds);
 
         transfer(cpi_ctx, amount)?;
         Ok(())

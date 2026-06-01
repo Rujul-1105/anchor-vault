@@ -21,11 +21,13 @@ pub struct Deposit<'info> {
 
 impl<'info> Deposit<'info> {
     pub fn deposit(&mut self, amount: u64) -> Result<()> {
-        // Transfer lamports from the user to the vault
+        // Transfer lamports from the user to the vault, using the system program
         let cpi_accounts = Transfer {
             from: self.user.to_account_info(),
             to: self.vault.to_account_info(),
         };
+
+        // signer_seeds not required for pda, user=signer makes sure that the user signs the txn
         let cpi_ctx = CpiContext::new(System::id(), cpi_accounts);
         transfer(cpi_ctx, amount)?;
         Ok(())

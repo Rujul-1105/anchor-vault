@@ -17,27 +17,27 @@ pub mod anchor_vault {
 
     // initialize the vault state and vault account
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
-        ctx.accounts.initialize(&ctx.bumps)
+        ctx.accounts.init(&ctx.bumps)
     }
 
     // deposit lamports into the vault
     pub fn deposit(ctx: Context<Deposit>, amount: u64) -> Result<()> {
         // Implementation for depos iting lamports
-        ctx.accounts.deposit(amount);
+        ctx.accounts.deposit(amount)?;
         Ok(())
     }
 
     // withdraw lamports from the vault
     pub fn withdraw(ctx: Context<Withdraw>, amount: u64) -> Result<()> {
         // Implementation for withdrawing lamports
-        ctx.accounts.withdraw(amount);
+        ctx.accounts.withdraw(amount)?;
         Ok(())
     }
 
     // close the vault and transfer remaining lamports to the owner
     pub fn close(ctx: Context<Close>) -> Result<()> {
         // Implementation for closing the vault
-        ctx.accounts.close();
+        ctx.accounts.close()?;
         Ok(())
     }
 }

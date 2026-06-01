@@ -1,4 +1,3 @@
-use anchor_lang::prelude::Pubkey;
 use anchor_lang::prelude::*;
 use {
     anchor_lang::{
@@ -38,16 +37,18 @@ fn test_initialize_deposit_withdraw_close() {
         data: ::anchor_vault::instruction::Initialize {}.data(),
         accounts: ::anchor_vault::accounts::Initialize {
             user,
-            vault: vault_pda,
             vault_state: vault_state_pda,
-            // system_program: solana_program::system_program::id(),
+            vault: vault_pda,
             system_program: SYSTEM_PROGRAM_ID,
         }
         .to_account_metas(None),
     };
 
+    // wraps the instruction into a transaction message.
     let message = Message::new(&[init_ix], Some(&payer.pubkey()));
     let recent_blockhash = svm.latest_blockhash();
+
+    // signs the transaction with the payer’s keypair.
     let transaction = Transaction::new(&[&payer], message, recent_blockhash);
     let tx1 = svm.send_transaction(transaction).unwrap();
 
@@ -133,7 +134,7 @@ fn test_initialize_deposit_withdraw_close() {
         vault_balance_after_withdraw
     );
 
-    // CLOSE THE ACCOUTN
+    // CLOSE THE ACCOUNTs
     let close_amount = svm.get_balance(&vault_pda).unwrap();
     let close_ix = Instruction {
         program_id: ::anchor_vault::id(),
